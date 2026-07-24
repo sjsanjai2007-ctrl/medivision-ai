@@ -116,12 +116,38 @@ _MEDICAL_KB = {
         ],
         "emergency_flags": "Seek immediate emergency help if blood sugar exceeds 300 mg/dL with confusion/vomiting (DKA/HHS) or drops below 70 mg/dL with shakiness/sweating.",
     },
+    "burns": {
+        "title": "Thermal & Chemical Burn Emergency Care",
+        "description": "Burn injuries require rapid cooling and sterile barrier protection to minimize tissue necrosis and infection.",
+        "management": [
+            "Cool the burn immediately under cool running tap water for at least 10–20 minutes.",
+            "Do NOT apply ice, butter, toothpastes, or home oils directly onto burned skin.",
+            "Cover loosely with a clean, non-adherent bandage or sterile gauze.",
+            "Do NOT pop or puncture intact burn blisters.",
+        ],
+        "emergency_flags": "Seek immediate Emergency Room care if the burn involves the face, hands, major joints, covers a large body surface, or appears charred/white (full-thickness burn).",
+    },
+    "wounds": {
+        "title": "Acute & Chronic Wound Infection Control",
+        "description": "Skin lacerations and open wounds require antiseptic cleansing and barrier protection to accelerate healing.",
+        "management": [
+            "Clean the area gently with mild soap and clean water; pat dry with sterile gauze.",
+            "Apply a thin layer of antibacterial ointment and cover with a sterile bandage.",
+            "Change dressing daily and inspect for heat, spreading redness, or purulent discharge.",
+            "Ensure tetanus immunization is up to date (booster within last 5 years).",
+        ],
+        "emergency_flags": "Seek immediate urgent care if bleeding does not stop after 10 minutes of direct pressure, or if red streaks radiate from the wound.",
+    },
 }
 
 # ── Intent Classifier ──────────────────────────────────────────
 def _classify_intent(query: str) -> str:
     q = query.lower().strip()
     # Check specific medical intents first
+    if re.search(r"\b(burn|burns|fire|scald|heat)\b", q):
+        return "burns"
+    if re.search(r"\b(wound|wounds|cut|laceration|bleeding|injury)\b", q):
+        return "wounds"
     if re.search(r"\b(asthma|breath|wheez|inhaler|cough|lung)\b", q):
         return "asthma"
     if re.search(r"\b(psoriasis|plaque|scale)\b", q):

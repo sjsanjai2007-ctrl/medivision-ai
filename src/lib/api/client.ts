@@ -9,6 +9,9 @@ function getApiBase(): string {
     return process.env.NEXT_PUBLIC_API_URL;
   }
   if (typeof window !== 'undefined' && window.location.hostname) {
+    if (window.location.hostname.includes('vercel.app')) {
+      return 'https://medivision-backend-df3i.onrender.com/api/v1';
+    }
     return `http://${window.location.hostname}:8000/api/v1`;
   }
   return 'http://localhost:8000/api/v1';

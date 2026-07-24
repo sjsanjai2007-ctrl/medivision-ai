@@ -16,6 +16,10 @@ import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from main import app
+from app.db.database import Base, engine
+
+# Ensure DB tables exist for tests
+Base.metadata.create_all(bind=engine)
 
 client = TestClient(app)
 

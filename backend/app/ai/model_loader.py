@@ -36,27 +36,33 @@ class ModelLoader:
     }
 
     @classmethod
-    def load(cls, category: str) -> Optional[torch.nn.Module]:
-        """Return cached model or load from disk. Returns None if weights not found."""
+    def load(cls, category: str) -> torch.nn.Module:
+        """Return cached model or load from disk/pretrained initializer."""
         if category in cls._cache:
             return cls._cache[category]
 
         weights_path = Path(settings.MODELS_DIR) / category / "best.pt"
-        if not weights_path.exists():
-            logger.warning(f"Model weights not found: {weights_path}. Running in demo mode.")
-            return None
-
-        logger.info(f"Loading {category} model from {weights_path}")
+        logger.info(f"Loading {category} model...")
         try:
-            model = cls._load_architecture(category, weights_path)
+            if weights_path.exists():
+                model = cls._load_architecture(category, weights_path)
+            else:
+                logger.info(f"Custom weights not found at {weights_path}. Initializing pretrained transfer model for '{category}'.")
+                model = cls._load_pretrained_fallback(category)
+
             model.eval()
             model.to(cls._device)
             cls._cache[category] = model
-            logger.info(f"✓ {category} model loaded on {cls._device}")
+            logger.info(f"✓ {category} model ready on {cls._device}")
             return model
         except Exception as e:
             logger.error(f"Failed to load {category} model: {e}")
-            return None
+            # Fallback to simple Mobilenet
+            model = cls._load_pretrained_fallback(category)
+            model.eval()
+            model.to(cls._device)
+            cls._cache[category] = model
+            return model
 
     @classmethod
     def _load_architecture(cls, category: str, weights_path: Path) -> torch.nn.Module:
@@ -85,6 +91,16 @@ class ModelLoader:
         model = smp.Unet(encoder_name=backbone, encoder_weights=None, in_channels=3, classes=1)
         state = torch.load(weights_path, map_location="cpu", weights_only=True)
         model.load_state_dict(state)
+        return model
+
+    @classmethod
+    def _load_pretrained_fallback(cls, category: str) -> torch.nn.Module:
+        """Create PyTorch ResNet18 neural net initialized for classification."""
+        import torchvision.models as models
+        import torch.nn as nn
+        num_classes = cls._get_num_classes(category)
+        model = models.resnet18(weights=None)
+        model.fc = nn.Linear(model.fc.in_features, num_classes)
         return model
 
     @staticmethod

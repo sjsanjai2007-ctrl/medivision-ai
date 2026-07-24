@@ -1,26 +1,37 @@
 # ============================================================
 # MediVision AI – FastAPI Backend Entry Point
 # ============================================================
+import os
+from pathlib import Path
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import health, predict, reports, hospitals, auth
 from app.core.config import settings
 from app.core.logging import setup_logging
+from app.db.database import Base, engine
 
 setup_logging()
+
+# Ensure uploads directory exists
+UPLOADS_DIR = Path(__file__).resolve().parent / "static" / "uploads"
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application startup / shutdown lifecycle."""
+    # Create SQLite database tables
+    Base.metadata.create_all(bind=engine)
+
     from app.ai.model_loader import ModelLoader
-    ModelLoader.warm_up()          # Pre-load all models into memory
+    ModelLoader.warm_up()          # Pre-load models into memory
     yield
-    ModelLoader.unload_all()       # Release GPU memory on shutdown
+    ModelLoader.unload_all()       # Release memory on shutdown
 
 
 app = FastAPI(
@@ -42,6 +53,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.add_middleware(GZipMiddleware, minimum_size=1024)
+
+# ── Static Files (Uploads & Heatmaps) ──────────────────────
+app.mount("/static", StaticFiles(directory=Path(__file__).resolve().parent / "static"), name="static")
 
 # ── Routers ─────────────────────────────────────────────────
 app.include_router(health.router,    prefix="/api/v1",          tags=["Health"])

@@ -387,16 +387,22 @@ export const HEALTH_TIPS: HealthTip[] = [
   },
 ];
 
-// ── AI Assistant Responses (Demo Mode) ───────────────────────
+// ── AI Assistant Responses ───────────────────────────────────
 export const DEMO_AI_RESPONSES: Record<string, string> = {
+  greeting:
+    "Hello! 👋 I am your **MediVision AI Health Assistant**. I can help explain your medical scan reports, answer health questions (e.g. about asthma, skin rashes, eye conditions), provide dietary tips, or direct you to nearby specialty hospitals.\n\nHow can I assist you today?",
+  asthma:
+    "**Asthma** is a chronic condition causing inflammation and narrowing of the bronchial airways.\n\n💡 **Key Clinical Management & Self-Care**:\n• **Keep your rescue inhaler (e.g. Salbutamol)** accessible at all times.\n• **Avoid common triggers**: Smoke, dust mites, strong perfumes, cold air, and animal dander.\n• **Use a spacer** with your inhaler for better drug delivery to the lungs.\n• **Stay updated on flu & pneumococcal vaccinations**.\n\n🚨 **Emergency Signs**: If you experience severe shortness of breath, chest tightness, blue lips/fingernails, or no relief from your inhaler, call 108 or go to the nearest emergency room immediately.",
   default:
-    "That's a great question. Based on your recent MediVision AI screening, I can provide some general information. However, please remember that this is for informational purposes only — always consult a qualified healthcare professional for diagnosis and treatment.",
+    "I understand you are asking about your health. As your MediVision AI Assistant, I can help answer questions regarding respiratory health, skin conditions, eye care, dietary guidelines, or hospital recommendations.\n\nCould you specify your symptom or medical topic so I can provide targeted information?",
   psoriasis:
-    "**Psoriasis** is a chronic autoimmune condition. It is **not contagious**. Key management strategies include: moisturizing daily, avoiding triggers like stress and alcohol, and following your dermatologist's prescribed treatment plan.",
+    "**Psoriasis** is a chronic autoimmune skin condition characterized by rapid skin cell buildup forming silvery scaly plaques. It is **not contagious**.\n\n• **Daily Care**: Apply thick, fragrance-free moisturizers immediately after bathing.\n• **Triggers to Avoid**: Stress, alcohol, skin injuries, cold dry weather.\n• **Treatments**: Topical corticosteroids, phototherapy, and systemic biologics.",
   diet:
-    "For skin conditions like Psoriasis, consider:\n\n✅ **Anti-inflammatory foods**: Turmeric, omega-3 rich fish, leafy greens\n✅ **Probiotics**: Yogurt, kefir, fermented foods\n❌ **Avoid**: Alcohol, red meat, processed sugars, nightshade vegetables",
+    "🥗 **Nutritional & Dietary Guidelines**:\n\n✅ **Recommended**: Anti-inflammatory foods rich in Omega-3 (salmon, walnuts, flaxseeds), leafy greens, berries, turmeric, and high-fiber whole grains.\n❌ **Limit / Avoid**: Refined sugars, ultra-processed foods, alcohol, excessive red meat, and known personal food allergens.",
   hospital:
-    "Based on your location and condition, Apollo Hospitals is the best match with a 4.8★ rating, 1.8 km away, with a Dermatology department open 24 hours. Shall I get directions?",
+    "🏥 **Recommended Nearby Hospital**:\n**Apollo Hospitals** (Rating: 4.8★, 1.8 km away)\n• **Specialties**: Dermatology, Cardiology, Respiratory Medicine, Emergency Care\n• **Status**: Open 24 Hours\n\nWould you like me to open Google Maps directions or initiate a call?",
   emergency:
-    "🚨 **Seek emergency care immediately if you experience**:\n• Sudden skin blistering over large areas (>30% body)\n• High fever with skin rash\n• Difficulty breathing\n• Severe eye pain or sudden vision loss\n\n**Emergency**: Call 108 (India) immediately.",
+    "🚨 **Urgent Warning Signs**:\nSeek emergency medical care immediately if experiencing:\n• Sudden severe shortness of breath or inability to speak in sentences\n• Chest pain or pressure radiating to arm/jaw\n• Sudden facial numbness, slurred speech, or weakness\n• High fever with severe spreading rash or blistering\n\n**Emergency Helpline**: Call **108** or **112**.",
+  thanks:
+    "You're very welcome! 😊 I'm always here to assist you with your health and medical questions. Stay healthy!",
 };

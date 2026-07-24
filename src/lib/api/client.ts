@@ -4,7 +4,15 @@
 // and demo-mode awareness.
 // ============================================================
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api/v1';
+function getApiBase(): string {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  if (typeof window !== 'undefined' && window.location.hostname) {
+    return `http://${window.location.hostname}:8000/api/v1`;
+  }
+  return 'http://localhost:8000/api/v1';
+}
 
 /** Retrieve the stored JWT token from localStorage (client-side only). */
 export function getToken(): string | null {
@@ -66,7 +74,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   if (token) headers['Authorization'] = `Bearer ${token}`;
   if (!formData && body) headers['Content-Type'] = 'application/json';
 
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(`${getApiBase()}${path}`, {
     method,
     headers,
     body: formData

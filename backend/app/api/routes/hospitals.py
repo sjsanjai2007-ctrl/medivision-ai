@@ -85,13 +85,17 @@ async def list_hospitals(
     specialty: Optional[str] = Query(None, description="Filter by specialty"),
     open_only: bool = Query(False, description="Show only hospitals open now"),
     max_distance_km: float = Query(50.0, ge=1, le=100),
+    lat: Optional[float] = Query(None, description="User latitude"),
+    lng: Optional[float] = Query(None, description="User longitude"),
 ) -> List[HospitalSchema]:
-    hospitals = [h for h in _DEMO_HOSPITALS if h.distance_km <= max_distance_km]
-    if open_only:
-        hospitals = [h for h in hospitals if h.is_open]
-    if specialty:
-        hospitals = [h for h in hospitals if any(specialty.lower() in s.lower() for s in h.specialties)]
-    return sorted(hospitals, key=lambda h: h.distance_km)
+    from app.services.hospital import hospital_search_service
+    return await hospital_search_service.search(
+        lat=lat,
+        lng=lng,
+        specialty=specialty,
+        open_only=open_only,
+        max_distance_km=max_distance_km,
+    )
 
 
 @router.get("/recommend", response_model=HospitalSchema, summary="Best Match Hospital")

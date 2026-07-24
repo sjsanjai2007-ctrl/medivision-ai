@@ -118,3 +118,31 @@ async def register(body: RegisterRequest, db: Session = Depends(get_db)) -> Toke
         name=body.name,
         email=body.email,
     )
+
+
+from fastapi.security import OAuth2PasswordBearer
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", auto_error=False)
+
+
+def get_current_user(token: Optional[str] = Depends(oauth2_scheme)) -> dict:
+    """Extracts and verifies JWT token payload, returning current authenticated user."""
+    if not token:
+        return _DEMO_USER
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        user_id = payload.get("sub")
+        if user_id:
+            return {
+                "id": user_id,
+                "name": payload.get("name", "User"),
+                "email": payload.get("email", "user@medivision.ai"),
+            }
+    except Exception:
+        pass
+    return _DEMO_USER
+
+
+@router.get("/me", summary="Get Current User Profile")
+async def get_me(current_user: dict = Depends(get_current_user)) -> dict:
+    """Returns profile information for the currently authenticated user."""
+    return current_user

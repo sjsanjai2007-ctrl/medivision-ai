@@ -15,6 +15,8 @@ import {
 import type { ChatMessage, SupportedLanguage } from '@/lib/types';
 import { generateId } from '@/lib/utils';
 
+import { sendAssistantChat } from '@/lib/api/assistant';
+
 export default function AssistantPage() {
   const [messages, setMessages] = useState<ChatMessage[]>(DEMO_CHAT_MESSAGES);
   const [input, setInput] = useState('');
@@ -36,37 +38,25 @@ export default function AssistantPage() {
       id: generateId(), role: 'user', content: text,
       timestamp: new Date().toISOString(), language,
     };
-    setMessages((prev) => [...prev, userMsg]);
+    const updatedMessages = [...messages, userMsg];
+    setMessages(updatedMessages);
     setInput('');
     setIsTyping(true);
 
-    await new Promise((r) => setTimeout(r, 1200 + Math.random() * 800));
-
-    const lower = text.toLowerCase().trim();
-    let response = DEMO_AI_RESPONSES.default;
-
-    if (/^(hi|hello|hey|greetings|good morning|good afternoon|good evening|who are you|hlo|hii)$/i.test(lower) || lower === 'hi' || lower === 'hello') {
-      response = DEMO_AI_RESPONSES.greeting;
-    } else if (lower.includes('asthma') || lower.includes('breath') || lower.includes('wheez') || lower.includes('lung') || lower.includes('inhaler') || lower.includes('cough')) {
-      response = DEMO_AI_RESPONSES.asthma;
-    } else if (lower.includes('psoriasis') || lower.includes('skin') || lower.includes('rash') || lower.includes('eczema') || lower.includes('report') || lower.includes('explain')) {
-      response = DEMO_AI_RESPONSES.psoriasis;
-    } else if (lower.includes('diet') || lower.includes('food') || lower.includes('eat') || lower.includes('nutrition') || lower.includes('vitamin')) {
-      response = DEMO_AI_RESPONSES.diet;
-    } else if (lower.includes('hospital') || lower.includes('doctor') || lower.includes('clinic') || lower.includes('nearby') || lower.includes('appointment')) {
-      response = DEMO_AI_RESPONSES.hospital;
-    } else if (lower.includes('emergency') || lower.includes('urgent') || lower.includes('pain') || lower.includes('chest pain') || lower.includes('faint')) {
-      response = DEMO_AI_RESPONSES.emergency;
-    } else if (lower.includes('thank') || lower.includes('thanks') || lower.includes('thx')) {
-      response = DEMO_AI_RESPONSES.thanks;
+    try {
+      const res = await sendAssistantChat(updatedMessages, language);
+      const aiMsg: ChatMessage = {
+        id: generateId(),
+        role: 'assistant',
+        content: res.reply,
+        timestamp: new Date().toISOString(),
+        language,
+      };
+      setIsTyping(false);
+      setMessages((prev) => [...prev, aiMsg]);
+    } catch {
+      setIsTyping(false);
     }
-
-    const aiMsg: ChatMessage = {
-      id: generateId(), role: 'assistant', content: response,
-      timestamp: new Date().toISOString(), language,
-    };
-    setIsTyping(false);
-    setMessages((prev) => [...prev, aiMsg]);
   };
 
   const lang = SUPPORTED_LANGUAGES.find((l) => l.code === language)!;

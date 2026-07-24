@@ -141,3 +141,18 @@ async def delete_report(report_id: str = Path(...), db: Session = Depends(get_db
     if len(_DEMO_REPORTS) == before:
         raise HTTPException(status_code=404, detail=f"Report '{report_id}' not found.")
     return {"deleted": report_id, "message": "Report deleted successfully."}
+
+
+@router.get("/{report_id}/pdf", summary="Download PDF Report")
+async def download_report_pdf(report_id: str = Path(...), db: Session = Depends(get_db)):
+    """Generates and returns downloadable PDF report."""
+    from fastapi.responses import Response
+    from app.services.pdf import generate_report_pdf
+
+    report = await get_report(report_id, db)
+    pdf_bytes = generate_report_pdf(report)
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=medivision_report_{report_id}.pdf"},
+    )

@@ -170,7 +170,14 @@ export default function ReportsPage() {
                   >
                     {/* Image */}
                     <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
-                      <Image src={report.imageUrl} alt={report.prediction.condition} fill className="object-cover" sizes="64px" />
+                      <Image
+                        src={report.imageUrl || report.prediction?.originalImageUrl || 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&q=80'}
+                        alt={report.prediction?.condition || 'Report image'}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                        sizes="64px"
+                      />
                     </div>
 
                     {/* Info */}

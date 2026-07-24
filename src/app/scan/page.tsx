@@ -427,13 +427,25 @@ export default function ScanPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
                     <div className="relative h-36 rounded-xl overflow-hidden">
-                      <Image src={previewUrl || result.originalImageUrl} alt="Original image" fill className="object-cover" />
+                      <Image
+                        src={previewUrl || result.originalImageUrl || 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&q=80'}
+                        alt="Original image"
+                        fill
+                        unoptimized
+                        className="object-cover"
+                      />
                     </div>
                     <p className="text-xs text-center font-medium" style={{ color: 'var(--text-muted)' }}>Original</p>
                   </div>
                   <div className="space-y-1">
                     <div className="relative h-36 rounded-xl overflow-hidden heatmap-overlay">
-                      <Image src={result.heatmapUrl} alt="Heatmap visualization" fill className="object-cover" />
+                      <Image
+                        src={result.heatmapUrl || previewUrl || 'https://images.unsplash.com/photo-1530026405186-ed1f139313f3?w=400&q=80'}
+                        alt="Heatmap visualization"
+                        fill
+                        unoptimized
+                        className="object-cover"
+                      />
                       <div className="absolute inset-0 opacity-40" style={{ background: 'linear-gradient(135deg,transparent,rgba(239,68,68,0.4),rgba(245,158,11,0.3))' }} />
                     </div>
                     <p className="text-xs text-center font-medium" style={{ color: 'var(--text-muted)' }}>Heatmap</p>

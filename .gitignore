@@ -40,4 +40,18 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
+# python & backend
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+venv/
+.venv/
+backend/venv/
+backend/medivision.db
+*.log
+logs/
+backend/logs/
+backend/static/uploads/*
+!.gitignore

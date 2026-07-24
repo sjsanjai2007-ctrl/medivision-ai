@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.api.routes import health, predict, reports, hospitals, auth
+from app.api.routes import health, predict, reports, hospitals, auth, assistant
 from app.core.config import settings
 from app.core.logging import setup_logging
 from app.db.database import Base, engine
@@ -63,3 +63,4 @@ app.include_router(auth.router,      prefix="/api/v1/auth",     tags=["Auth"])
 app.include_router(predict.router,   prefix="/api/v1/predict",  tags=["Prediction"])
 app.include_router(reports.router,   prefix="/api/v1/reports",  tags=["Reports"])
 app.include_router(hospitals.router, prefix="/api/v1/hospitals",tags=["Hospitals"])
+app.include_router(assistant.router, prefix="/api/v1/assistant",tags=["Assistant"])

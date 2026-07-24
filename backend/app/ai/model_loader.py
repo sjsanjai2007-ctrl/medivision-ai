@@ -38,17 +38,22 @@ class ModelLoader:
     @classmethod
     def load(cls, category: str) -> torch.nn.Module:
         """Return cached model or load from disk/pretrained initializer."""
+        from app.ai.registry import AIModelRegistry
         if category in cls._cache:
+            AIModelRegistry.update_status(category, "Serving")
             return cls._cache[category]
 
         weights_path = Path(settings.MODELS_DIR) / category / "best.pt"
         logger.info(f"Loading {category} model...")
+        AIModelRegistry.update_status(category, "Loaded")
         try:
             if weights_path.exists():
                 model = cls._load_architecture(category, weights_path)
+                AIModelRegistry.update_status(category, "Inference Ready")
             else:
                 logger.info(f"Custom weights not found at {weights_path}. Initializing pretrained transfer model for '{category}'.")
                 model = cls._load_pretrained_fallback(category)
+                AIModelRegistry.update_status(category, "Fallback")
 
             model.eval()
             model.to(cls._device)
@@ -57,7 +62,7 @@ class ModelLoader:
             return model
         except Exception as e:
             logger.error(f"Failed to load {category} model: {e}")
-            # Fallback to simple Mobilenet
+            AIModelRegistry.update_status(category, "Error")
             model = cls._load_pretrained_fallback(category)
             model.eval()
             model.to(cls._device)

@@ -55,14 +55,27 @@ def test_demo_login():
 
 
 def test_register():
-    response = client.post("/api/v1/auth/register", json={
-        "name": "Test User",
-        "email": "test@example.com",
-        "password": "secure123",
-    })
+    response = client.post(
+        "/api/v1/auth/register",
+        json={"name": "Dr. Test User", "email": "test@medivision.ai", "password": "securepassword123"},
+    )
     assert response.status_code == 201
     data = response.json()
-    assert data["name"] == "Test User"
+    assert "access_token" in data
+    assert data["email"] == "test@medivision.ai"
+
+
+def test_get_me():
+    # Test with demo login token
+    login_resp = client.post(
+        "/api/v1/auth/login",
+        json={"email": "demo@medivision.ai", "password": "demo"},
+    )
+    token = login_resp.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+    me_resp = client.get("/api/v1/auth/me", headers=headers)
+    assert me_resp.status_code == 200
+    assert "email" in me_resp.json()
 
 
 # ── Prediction ──────────────────────────────────────────────
@@ -126,6 +139,13 @@ def test_report_not_found():
     assert response.status_code == 404
 
 
+def test_download_report_pdf():
+    response = client.get("/api/v1/reports/rpt-001/pdf")
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/pdf"
+    assert len(response.content) > 100
+
+
 # ── Hospitals ────────────────────────────────────────────────
 def test_list_hospitals():
     response = client.get("/api/v1/hospitals/")
@@ -148,3 +168,17 @@ def test_best_match_hospital():
     data = response.json()
     assert "name" in data
     assert "specialties" in data
+
+
+# ── AI Assistant Chat ───────────────────────────────────────
+def test_assistant_chat():
+    payload = {
+        "messages": [{"role": "user", "content": "I have asthma and shortness of breath"}],
+        "language": "en"
+    }
+    response = client.post("/api/v1/assistant/chat", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "reply" in data
+    assert "asthma" in data["reply"].lower()
+    assert "recommendations" in data

@@ -1,0 +1,19 @@
+2026-07-24 10:37:28.693 | INFO     | app.ai.model_loader:warm_up:105 - Warming up AI models...
+2026-07-24 10:37:28.693 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\skin\best.pt. Running in demo mode.
+2026-07-24 10:37:28.694 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\eye\best.pt. Running in demo mode.
+2026-07-24 10:37:28.694 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\chest\best.pt. Running in demo mode.
+2026-07-24 10:37:28.695 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\dental\best.pt. Running in demo mode.
+2026-07-24 10:37:28.695 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\oral\best.pt. Running in demo mode.
+2026-07-24 10:37:28.696 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\burns\best.pt. Running in demo mode.
+2026-07-24 10:37:28.696 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\wounds\best.pt. Running in demo mode.
+2026-07-24 10:37:28.696 | INFO     | app.ai.model_loader:warm_up:109 - Models ready: none (demo mode)
+2026-07-24 17:00:03.194 | INFO     | app.ai.model_loader:warm_up:105 - Warming up AI models...
+2026-07-24 17:00:03.194 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\skin\best.pt. Running in demo mode.
+2026-07-24 17:00:03.195 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\eye\best.pt. Running in demo mode.
+2026-07-24 17:00:03.195 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\chest\best.pt. Running in demo mode.
+2026-07-24 17:00:03.195 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\dental\best.pt. Running in demo mode.
+2026-07-24 17:00:03.196 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\oral\best.pt. Running in demo mode.
+2026-07-24 17:00:03.196 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\burns\best.pt. Running in demo mode.
+2026-07-24 17:00:03.196 | WARNING  | app.ai.model_loader:load:46 - Model weights not found: backend\app\ai\models\wounds\best.pt. Running in demo mode.
+2026-07-24 17:00:03.197 | INFO     | app.ai.model_loader:warm_up:109 - Models ready: none (demo mode)
+2026-07-24 17:00:49.575 | INFO     | app.ai.model_loader:unload_all:117 - All models unloaded.

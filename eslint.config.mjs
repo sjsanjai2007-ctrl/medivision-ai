@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Ignore Python backend and its venv JS artifacts
+    "backend/**",
   ]),
 ]);
 

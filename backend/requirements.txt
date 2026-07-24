@@ -1,0 +1,62 @@
+# ============================================================
+# MediVision AI – Backend Requirements
+# ============================================================
+
+# Web Framework
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Authentication & Security
+python-jose[cryptography]
+passlib[bcrypt]
+
+# Database
+sqlalchemy
+alembic
+
+# Caching
+redis
+
+# AI / ML Core
+torch
+torchvision
+timm
+numpy
+pillow
+opencv-python-headless
+scikit-learn
+
+# Grad-CAM Explainability
+grad-cam
+
+# Object Detection (YOLOv8 for dental)
+ultralytics
+
+# Image Processing
+albumentations
+scipy
+
+# Data Validation
+pydantic
+pydantic-settings
+
+# Storage
+boto3
+cloudinary
+
+# PDF Generation (server-side)
+reportlab
+
+# Monitoring & Logging
+loguru
+prometheus-fastapi-instrumentator
+
+# Testing
+pytest
+pytest-asyncio
+httpx
+
+# Development utilities
+python-dotenv
+httptools

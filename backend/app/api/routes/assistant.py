@@ -144,6 +144,12 @@ _MEDICAL_KB = {
 def _classify_intent(query: str) -> str:
     q = query.lower().strip()
     # Check specific medical intents first
+    if re.search(r"\b(sick|fever|ill|unwell|nausea|headache|pain|cold|flu)\b", q):
+        return "general_symptoms"
+    if re.search(r"\b(burn|burns|fire|scald|heat)\b", q):
+        return "burns"
+    if re.search(r"\b(wound|wounds|cut|laceration|bleeding|injury)\b", q):
+        return "wounds"
     if re.search(r"\b(burn|burns|fire|scald|heat)\b", q):
         return "burns"
     if re.search(r"\b(wound|wounds|cut|laceration|bleeding|injury)\b", q):
@@ -200,6 +206,21 @@ def _generate_response(intent: str, user_query: str) -> ChatResponse:
             intent=intent,
             urgency="routine",
             recommendations=info["management"],
+        )
+
+    if intent == "general_symptoms":
+        return ChatResponse(
+            reply=(
+                "🌡️ **General Clinical Guidance**:\n\n"
+                "I am sorry to hear you are feeling unwell. When experiencing general symptoms (such as fever, body ache, nausea, or fatigue):\n\n"
+                "• **Rest & Hydration**: Get adequate bed rest and drink 2.5L of water, warm herbal teas, or oral rehydration fluids.\n"
+                "• **Symptom Log**: Keep track of your body temperature and symptom onset times.\n"
+                "• **Medical Evaluation**: If symptoms persist beyond 48 hours or worsen, consult a general practitioner for an evaluation.\n\n"
+                "🚨 **Warning Flags**: Seek immediate medical care if you experience high fever (>102°F), severe headache with stiff neck, or difficulty breathing."
+            ),
+            intent="general_symptoms",
+            urgency="routine",
+            recommendations=["Hydrate with fluids", "Rest and monitor temperature", "Consult a physician if symptoms persist"],
         )
 
     if intent == "diet":

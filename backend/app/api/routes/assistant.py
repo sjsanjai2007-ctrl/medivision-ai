@@ -144,16 +144,12 @@ _MEDICAL_KB = {
 def _classify_intent(query: str) -> str:
     q = query.lower().strip()
     # Check specific medical intents first
+    if re.search(r"(burn|burns|burnt|burned|burnet|burning|fire|scald|heat)", q):
+        return "burns"
+    if re.search(r"(wound|wounds|cut|laceration|bleeding|injury|injured)", q):
+        return "wounds"
     if re.search(r"\b(sick|fever|ill|unwell|nausea|headache|pain|cold|flu)\b", q):
         return "general_symptoms"
-    if re.search(r"\b(burn|burns|fire|scald|heat)\b", q):
-        return "burns"
-    if re.search(r"\b(wound|wounds|cut|laceration|bleeding|injury)\b", q):
-        return "wounds"
-    if re.search(r"\b(burn|burns|fire|scald|heat)\b", q):
-        return "burns"
-    if re.search(r"\b(wound|wounds|cut|laceration|bleeding|injury)\b", q):
-        return "wounds"
     if re.search(r"\b(asthma|breath|wheez|inhaler|cough|lung)\b", q):
         return "asthma"
     if re.search(r"\b(psoriasis|plaque|scale)\b", q):

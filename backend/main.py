@@ -29,7 +29,9 @@ async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
 
     from app.ai.model_loader import ModelLoader
-    ModelLoader.warm_up()          # Pre-load models into memory
+    # Lazy load models on demand to conserve RAM on 512MB free tier containers
+    if not os.environ.get("RENDER") and not settings.DEMO_MODE:
+        ModelLoader.warm_up()
     yield
     ModelLoader.unload_all()       # Release memory on shutdown
 

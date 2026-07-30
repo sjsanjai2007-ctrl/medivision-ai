@@ -41,6 +41,12 @@ class Settings(BaseSettings):
     OVERPASS_URL: str = "https://overpass-api.de/api/interpreter"
     USER_AGENT: str = "MediVisionAI/1.0 (sih-screening-app)"
 
+    # Cloud Live LLM API (Google Gemini / OpenAI)
+    GEMINI_API_KEY: str = ""
+    OPENAI_API_KEY: str = ""
+    LLM_PROVIDER: str = "gemini"  # gemini, openai, ollama, auto
+    GEMINI_MODEL: str = "gemini-1.5-flash"
+
     # Local LLM & RAG (Ollama & ChromaDB)
     OLLAMA_BASE_URL: str = "http://localhost:11434"
     OLLAMA_PRIMARY_MODEL: str = "gemma3:4b"

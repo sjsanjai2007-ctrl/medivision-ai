@@ -8,33 +8,27 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Search, Download, Trash2, X, ChevronRight, Calendar, RefreshCw } from 'lucide-react';
-import AppShell from '@/components/layout/AppShell';
 import SeverityBadge from '@/components/shared/SeverityBadge';
 import ConfidenceMeter from '@/components/shared/ConfidenceMeter';
 import DisclaimerBanner from '@/components/shared/DisclaimerBanner';
 import EmptyState from '@/components/shared/EmptyState';
-import { DEMO_REPORTS } from '@/lib/constants/demo-data';
 import { useDemoMode } from '@/lib/providers/DemoModeProvider';
 import { listReportsApi, deleteReportApi } from '@/lib/api/reports';
 import type { Report } from '@/lib/types';
 import { formatDate, getCategoryLabel, getUrgencyLabel, getUrgencyColor } from '@/lib/utils';
 
 export default function ReportsPage() {
-  const { isDemoMode } = useDemoMode();
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Report | null>(null);
-  const [reports, setReports] = useState<Report[]>(isDemoMode ? DEMO_REPORTS : []);
-  const [isLoading, setIsLoading] = useState(!isDemoMode);
+  const [reports, setReports] = useState<Report[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
-  // Fetch from backend when not in demo mode
   useEffect(() => {
-    if (isDemoMode) return;
     const load = async () => {
       try {
         setIsLoading(true);
         const raw = await listReportsApi();
-        // Map the leaner backend ReportSummary to the richer frontend Report shape
         const mapped: Report[] = raw.map((r) => ({
           id: r.id,
           userId: 'current',
@@ -67,13 +61,12 @@ export default function ReportsPage() {
         setReports(mapped);
       } catch (err) {
         setFetchError(err instanceof Error ? err.message : 'Failed to load reports.');
-        setReports(DEMO_REPORTS); // Fall back to demo data
       } finally {
         setIsLoading(false);
       }
     };
     load();
-  }, [isDemoMode]);
+  }, []);
 
   const filtered = useMemo(() =>
     reports.filter((r) =>
@@ -82,16 +75,14 @@ export default function ReportsPage() {
     ), [reports, query]);
 
   const deleteReport = async (id: string) => {
-    if (!isDemoMode) {
-      try { await deleteReportApi(id); } catch { /* ignore */ }
-    }
+    try { await deleteReportApi(id); } catch { /* ignore */ }
     setReports((prev) => prev.filter((r) => r.id !== id));
     if (selected?.id === id) setSelected(null);
   };
 
   return (
-    <AppShell>
-      <div className="px-4 py-5 max-w-2xl mx-auto lg:max-w-4xl lg:py-8">
+    <>
+      <div className="page-wrap">
         <div className="flex items-center justify-between mb-5">
           <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>My Reports</h1>
           <span className="text-sm px-3 py-1 rounded-full font-medium"
@@ -273,6 +264,6 @@ export default function ReportsPage() {
           </div>
         )}
       </div>
-    </AppShell>
+    </>
   );
 }

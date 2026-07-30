@@ -7,7 +7,7 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Bell, Activity } from 'lucide-react';
+import { Bell, Activity, User, LogIn } from 'lucide-react';
 import { useDemoMode } from '@/lib/providers/DemoModeProvider';
 import Link from 'next/link';
 
@@ -23,9 +23,9 @@ const PAGE_TITLES: Record<string, string> = {
 
 export default function Header() {
   const pathname = usePathname();
-  const { isDemoMode } = useDemoMode();
+  const { user } = useDemoMode();
 
-  const title = PAGE_TITLES[pathname] ?? 'MediVision AI';
+  const title = (pathname && PAGE_TITLES[pathname]) ?? 'MediVision AI';
 
   return (
     <header
@@ -49,9 +49,9 @@ export default function Header() {
         </Link>
         <motion.h1
           key={title}
-          initial={{ opacity: 0, y: -6 }}
+          initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="text-lg font-bold"
           style={{ color: 'var(--text-primary)' }}
         >
@@ -59,12 +59,8 @@ export default function Header() {
         </motion.h1>
       </div>
 
-      {/* Right – Actions */}
+      {/* Right – Actions & User Avatar */}
       <div className="flex items-center gap-2">
-        {isDemoMode && (
-          <span className="demo-badge hidden sm:inline-flex">⚡ Demo</span>
-        )}
-
         {/* Notifications */}
         <button
           className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-105"
@@ -78,6 +74,31 @@ export default function Header() {
           />
         </button>
 
+        {/* User Account / Profile */}
+        {user ? (
+          <Link
+            href="/profile"
+            className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition-all hover:bg-[var(--border-subtle)]"
+          >
+            <div
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold"
+              style={{ background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)' }}
+            >
+              {user.name.charAt(0).toUpperCase()}
+            </div>
+            <span className="text-xs font-semibold hidden md:inline-block max-w-[100px] truncate" style={{ color: 'var(--text-primary)' }}>
+              {user.name.split(' ')[0]}
+            </span>
+          </Link>
+        ) : (
+          <Link
+            href="/login"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-sky-600 bg-sky-50 dark:bg-sky-950/40 dark:text-sky-400 hover:bg-sky-100 transition-all"
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            <span>Sign In</span>
+          </Link>
+        )}
       </div>
     </header>
   );

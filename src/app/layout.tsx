@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Providers } from '@/lib/providers';
+import AppShell from '@/components/layout/AppShell';
 import '@/app/globals.css';
 
 export const metadata: Metadata = {
@@ -44,7 +45,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <Providers>
-          {children}
+          {/* AppShell lives here — rendered ONCE, never remounts on navigation.
+              Header + BottomNav stay stable → indicator never flashes to Home. */}
+          <AppShell>
+            {children}
+          </AppShell>
         </Providers>
       </body>
     </html>

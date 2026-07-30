@@ -138,12 +138,25 @@ _MEDICAL_KB = {
         ],
         "emergency_flags": "Seek immediate urgent care if bleeding does not stop after 10 minutes of direct pressure, or if red streaks radiate from the wound.",
     },
+    "chest_pain": {
+        "title": "Chest & Heart Pain Emergency Guidance",
+        "description": "Chest or heart pain—even if mild or intermittent—requires prompt clinical evaluation to rule out serious cardiac or pulmonary conditions.",
+        "management": [
+            "Rest in an upright, relaxed position and stay calm; avoid physical exertion.",
+            "Loosen tight clothing around your neck and chest.",
+            "If you have prescribed cardiac medication (e.g. Nitroglycerin), take it as directed by your cardiologist.",
+            "Have someone stay with you while arranging immediate medical evaluation.",
+        ],
+        "emergency_flags": "IMMEDIATELY Call 108 or 112 (India) if chest pain radiates to your left arm, jaw, neck, or back, or is accompanied by shortness of breath, cold sweating, or dizziness.",
+    },
 }
 
 # ── Intent Classifier ──────────────────────────────────────────
 def _classify_intent(query: str) -> str:
     q = query.lower().strip()
     # Check specific medical intents first
+    if re.search(r"\b(chest pain|heart pain|chest|heart|cardiac|angina|tightness|palpitation)\b", q):
+        return "chest_pain"
     if re.search(r"(burn|burns|burnt|burned|burnet|burning|fire|scald|heat)", q):
         return "burns"
     if re.search(r"(wound|wounds|cut|laceration|bleeding|injury|injured)", q):
@@ -291,10 +304,11 @@ async def chat_endpoint(body: ChatRequest) -> ChatResponse:
     if intent == "emergency":
         return _generate_response("emergency", last_user_msg)
 
-    # Try local Ollama LLM service
+    # Try Live LLM API (Google Gemini / Ollama)
     try:
-        from app.services.llm import ollama_service
-        llm_reply = await ollama_service.generate_response(last_user_msg)
+        from app.services.llm import llm_service
+        history = [m.model_dump() for m in body.messages[:-1]] if len(body.messages) > 1 else None
+        llm_reply = await llm_service.generate_response(last_user_msg, history=history)
         if llm_reply:
             return ChatResponse(
                 reply=llm_reply,

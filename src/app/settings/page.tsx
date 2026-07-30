@@ -10,7 +10,6 @@ import {
   Globe, Bell, Mic, Shield, Info,
   ChevronRight, Check, Activity,
 } from 'lucide-react';
-import AppShell from '@/components/layout/AppShell';
 import { useTheme } from '@/lib/providers/ThemeProvider';
 import { SUPPORTED_LANGUAGES } from '@/lib/constants/demo-data';
 import type { SupportedLanguage } from '@/lib/types';
@@ -157,8 +156,8 @@ export default function SettingsPage() {
   ];
 
   return (
-    <AppShell>
-      <div className="px-4 py-5 max-w-2xl mx-auto lg:max-w-3xl lg:py-8 space-y-5">
+    <>
+      <div className="page-wrap space-y-5">
         <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Settings</h1>
 
         {sections.map((section, sIdx) => (
@@ -226,6 +225,6 @@ export default function SettingsPage() {
           </motion.div>
         </div>
       )}
-    </AppShell>
+    </>
   );
 }

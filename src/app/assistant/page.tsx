@@ -7,18 +7,23 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Mic, Volume2, VolumeX, ChevronDown } from 'lucide-react';
-import AppShell from '@/components/layout/AppShell';
 import {
-  DEMO_CHAT_MESSAGES, QUICK_ACTIONS, SUPPORTED_LANGUAGES,
-  DEMO_AI_RESPONSES,
+  QUICK_ACTIONS, SUPPORTED_LANGUAGES,
 } from '@/lib/constants/demo-data';
 import type { ChatMessage, SupportedLanguage } from '@/lib/types';
 import { generateId } from '@/lib/utils';
 
 import { sendAssistantChat } from '@/lib/api/assistant';
+import FormattedMarkdown from '@/components/shared/FormattedMarkdown';
 
 export default function AssistantPage() {
-  const [messages, setMessages] = useState<ChatMessage[]>(DEMO_CHAT_MESSAGES);
+  const [messages, setMessages] = useState<ChatMessage[]>([{
+    id: 'welcome',
+    role: 'assistant',
+    content: "Hello! I'm **MediVision AI Assistant**. I can help you understand your screening results, answer health questions, and guide you to the right specialist. How can I help you today?",
+    timestamp: new Date().toISOString(),
+    language: 'en',
+  }]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -62,18 +67,12 @@ export default function AssistantPage() {
   const lang = SUPPORTED_LANGUAGES.find((l) => l.code === language)!;
 
   return (
-    <AppShell>
-      <div className="flex flex-col h-[calc(100dvh-64px-72px)] lg:h-[calc(100dvh-64px)] max-w-2xl mx-auto">
-        {/* Header bar */}
-        <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-base"
-              style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)' }}>🤖</div>
-            <div>
-              <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>MediVision Assistant</p>
-              <p className="text-xs text-emerald-500 font-medium">● Online</p>
-            </div>
-          </div>
+    <div className="flex flex-col h-[calc(100dvh-68px-84px)] max-h-[calc(100dvh-68px-84px)] w-full max-w-[680px] sm:max-w-[720px] lg:max-w-[900px] xl:max-w-[1100px] mx-auto overflow-hidden">
+        {/* Slim toolbar: online status + language + voice */}
+        <div className="flex-shrink-0 flex items-center justify-between px-4 py-2 border-b bg-[var(--bg-surface)] z-10" style={{ borderColor: 'var(--border-subtle)' }}>
+          <span className="flex items-center gap-1.5 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
+            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />Online
+          </span>
           <div className="flex items-center gap-2">
             {/* Language picker */}
             <div className="relative">
@@ -124,8 +123,8 @@ export default function AssistantPage() {
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="px-4 py-3 border-b overflow-x-auto" style={{ borderColor: 'var(--border-subtle)' }}>
+        {/* Quick Actions (Fixed) */}
+        <div className="flex-shrink-0 px-4 py-3 border-b overflow-x-auto bg-[var(--bg-surface)] z-10" style={{ borderColor: 'var(--border-subtle)' }}>
           <div className="flex gap-2 w-max">
             {QUICK_ACTIONS.map((qa) => (
               <button
@@ -140,8 +139,8 @@ export default function AssistantPage() {
           </div>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4" aria-live="polite" aria-label="Chat messages">
+        {/* Messages (Only Scrollable Area) */}
+        <div className="flex-1 overflow-y-auto min-h-0 px-4 py-4 space-y-4" aria-live="polite" aria-label="Chat messages">
           {messages.map((msg, idx) => (
             <motion.div
               key={msg.id}
@@ -155,7 +154,11 @@ export default function AssistantPage() {
                   style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)' }}>🤖</div>
               )}
               <div className={msg.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-assistant'}>
-                <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
+                {msg.role === 'assistant' ? (
+                  <FormattedMarkdown content={msg.content} />
+                ) : (
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
+                )}
                 <p className="text-[10px] mt-1 opacity-60">
                   {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </p>
@@ -183,8 +186,8 @@ export default function AssistantPage() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Input bar */}
-        <div className="px-4 py-3 border-t" style={{ borderColor: 'var(--border-subtle)', background: 'var(--glass-bg-strong)', backdropFilter: 'var(--glass-blur)' }}>
+        {/* Input bar (Fixed) */}
+        <div className="flex-shrink-0 px-4 py-3 border-t bg-[var(--glass-bg-strong)] backdrop-blur-md z-10" style={{ borderColor: 'var(--border-subtle)' }}>
           <div className="flex items-center gap-2">
             {/* Voice button */}
             <motion.button
@@ -245,7 +248,6 @@ export default function AssistantPage() {
             </motion.button>
           </div>
         </div>
-      </div>
-    </AppShell>
+    </div>
   );
 }

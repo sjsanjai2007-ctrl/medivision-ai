@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import AppShell from '@/components/layout/AppShell';
 import WelcomeCard from '@/components/home/WelcomeCard';
 import RecentReports from '@/components/home/RecentReports';
 import HealthTips from '@/components/home/HealthTips';
@@ -13,8 +12,9 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <AppShell>
-      <div className="px-4 py-5 space-y-6 max-w-2xl mx-auto lg:max-w-3xl lg:py-8">
+    <>
+      <div className="page-wrap space-y-6">
+
         {/* Welcome Card */}
         <WelcomeCard />
 
@@ -36,6 +36,6 @@ export default function HomePage() {
 
       {/* Floating Emergency Button */}
       <EmergencyButton />
-    </AppShell>
+    </>
   );
 }

@@ -13,12 +13,11 @@ import {
   Camera, Upload, ImageIcon, CheckCircle2, XCircle,
   RefreshCw, ArrowRight, Eye, FileText, AlertCircle,
 } from 'lucide-react';
-import AppShell from '@/components/layout/AppShell';
 import AITimeline from '@/components/scan/AITimeline';
 import ConfidenceMeter from '@/components/shared/ConfidenceMeter';
 import SeverityBadge from '@/components/shared/SeverityBadge';
 import DisclaimerBanner from '@/components/shared/DisclaimerBanner';
-import { MEDICAL_CATEGORIES, AI_TIMELINE_STEPS, DEMO_REPORTS } from '@/lib/constants/demo-data';
+import { MEDICAL_CATEGORIES, AI_TIMELINE_STEPS } from '@/lib/constants/demo-data';
 import { useDemoMode } from '@/lib/providers/DemoModeProvider';
 import { predictApi } from '@/lib/api/predict';
 import type { MedicalCategory, AITimelineStep, PredictionResult } from '@/lib/types';
@@ -29,7 +28,6 @@ type ScanStep = 'category' | 'upload' | 'quality' | 'processing' | 'results';
 type UploadTab = 'gallery' | 'camera' | 'drag';
 
 export default function ScanPage() {
-  const { isDemoMode } = useDemoMode();
   const [step, setStep] = useState<ScanStep>('category');
   const [selectedCategory, setSelectedCategory] = useState<MedicalCategory | null>(null);
   const [uploadTab, setUploadTab] = useState<UploadTab>('gallery');
@@ -42,27 +40,6 @@ export default function ScanPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const selectedFileRef = useRef<File | null>(null);
 
-  // Mock prediction (Demo Mode)
-  const mockPredict = useCallback(async () => {
-    const mockReport = DEMO_REPORTS[0];
-    const steps = AI_TIMELINE_STEPS.map((s) => ({ ...s }));
-
-    for (let i = 0; i < steps.length; i++) {
-      await new Promise((r) => setTimeout(r, 700 + Math.random() * 300));
-      setTimelineSteps((prev) =>
-        prev.map((s, idx) => ({
-          ...s,
-          status: idx < i ? 'completed' : idx === i ? 'active' : 'pending',
-        }))
-      );
-    }
-    await new Promise((r) => setTimeout(r, 600));
-    setTimelineSteps((prev) => prev.map((s) => ({ ...s, status: 'completed' })));
-    setResult(mockReport.prediction);
-    setStep('results');
-  }, []);
-
-  // Real prediction via FastAPI backend
   const realPredict = useCallback(async () => {
     const file = selectedFileRef.current;
     if (!file || !selectedCategory) return;
@@ -133,11 +110,7 @@ export default function ScanPage() {
     setStep('processing');
     setPredictError(null);
     setTimelineSteps(AI_TIMELINE_STEPS.map((s) => ({ ...s, status: 'pending' })));
-    if (isDemoMode) {
-      mockPredict();
-    } else {
-      realPredict();
-    }
+    realPredict();
   };
 
   const reset = () => {
@@ -152,8 +125,8 @@ export default function ScanPage() {
   };
 
   return (
-    <AppShell>
-      <div className="px-4 py-5 max-w-2xl mx-auto lg:max-w-3xl lg:py-8">
+    <>
+      <div className="page-wrap">
         {/* Step Indicator */}
         <div className="flex items-center gap-1.5 sm:gap-2 mb-6 overflow-x-auto no-scrollbar pb-1 max-w-full">
           {(['category', 'upload', 'quality', 'processing', 'results'] as ScanStep[]).map((s, idx) => {
@@ -510,6 +483,6 @@ export default function ScanPage() {
           )}
         </AnimatePresence>
       </div>
-    </AppShell>
+    </>
   );
 }

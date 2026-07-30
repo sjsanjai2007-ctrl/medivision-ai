@@ -9,6 +9,7 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from './ThemeProvider';
 import { DemoModeProvider } from './DemoModeProvider';
+import { NavigationProvider } from './NavigationProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,7 +26,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <DemoModeProvider>
-          {children}
+          <NavigationProvider>
+            {children}
+          </NavigationProvider>
         </DemoModeProvider>
       </ThemeProvider>
     </QueryClientProvider>

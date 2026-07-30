@@ -55,7 +55,7 @@ export default function RegisterPage() {
               <div className="relative">
                 <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                 <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)}
-                  placeholder="Arjun Sharma" required
+                  placeholder="Your Full Name" required
                   className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none min-h-[44px]"
                   style={{ background: 'var(--bg-base)', border: '1px solid var(--border-default)', color: 'var(--text-primary)' }} />
               </div>

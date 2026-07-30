@@ -6,7 +6,8 @@
 // ============================================================
 
 import React, { useEffect, useRef } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { useNavigation } from '@/lib/providers/NavigationProvider';
 
 // ── Nav tabs (5 items — adapt icons/paths to MediVision) ─────
 const TABS = [
@@ -246,7 +247,7 @@ function buildFilter(
 
 export default function BottomNav() {
   const pathname = usePathname();
-  const router = useRouter();
+  const { navigateTo } = useNavigation();
   const navWrapRef = useRef<HTMLElement>(null);
   const navInnerRef = useRef<HTMLDivElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
@@ -260,6 +261,7 @@ export default function BottomNav() {
 
     const items = Array.from(nav.querySelectorAll<HTMLButtonElement>('.ios-item'));
     const activeIdx = TABS.findIndex((t) => {
+      if (!pathname) return t.path === '/';
       if (t.path === '/') return pathname === '/';
       return pathname.startsWith(t.path);
     });
@@ -520,8 +522,8 @@ export default function BottomNav() {
       queueGlassRebuild();
       setTimeout(queueGlassRebuild, 120);
       endInteraction();
-      // Navigate to the selected tab
-      router.push(TABS[targetIdx].path);
+      // Navigate with delayed transition
+      navigateTo(TABS[targetIdx].path);
     }
 
     function onPointerMove(e: PointerEvent) {

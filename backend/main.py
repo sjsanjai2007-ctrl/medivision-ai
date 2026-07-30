@@ -1,5 +1,5 @@
 # ============================================================
-# MediVision AI – FastAPI Backend Entry Point
+# MediVision AI – FastAPI Backend Entry Point (Strict Medical Domain Guardrails Active)
 # ============================================================
 import os
 from pathlib import Path
